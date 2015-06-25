@@ -1,12 +1,11 @@
 <?xml version='1.0' standalone='yes'?>
 
 <!DOCTYPE PLUGIN [
-<!ENTITY name       "snmp">
-<!ENTITY author     "coppit">
-<!ENTITY version    "2015.06.24">
-<!ENTITY pluginURL  "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
+<!ENTITY name        "snmp">
+<!ENTITY author      "coppit">
+<!ENTITY version     "2015.06.24">
+<!ENTITY pluginURL   "https://raw.githubusercontent.com/&author;/unraid-snmp/master/&name;.plg">
 <!ENTITY pkgversion  "5.7.3">
-<!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/&repo;/master">
 <!ENTITY plugdir     "/usr/local/emhttp/plugins/&name;">
 <!ENTITY pkgdir      "/boot/packages">
 <!ENTITY cfgdir      "/boot/config/plugins/&name;">
