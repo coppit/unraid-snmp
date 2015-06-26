@@ -4,11 +4,15 @@
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
 <!ENTITY version     "2015.06.24">
-<!ENTITY pluginURL   "https://raw.githubusercontent.com/&author;/unraid-snmp/master/&name;.plg">
+<!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.3">
+<!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/&repo;/master">
 <!ENTITY plugdir     "/usr/local/emhttp/plugins/&name;">
 <!ENTITY pkgdir      "/boot/packages">
 <!ENTITY cfgdir      "/boot/config/plugins/&name;">
+<!ENTITY pkghost     "http://slackbuilds.org/mirror/slackware/slackware64-14.1/slackware64">
+<!ENTITY snmppkg     "net-snmp-&pkgversion;-x86_64-1.txz">
+<!ENTITY snmppkgmd5  "29e5ba42618c19d3da6e6fde97a2b161">
 <!ENTITY perlpkg     "perl-5.18.1-x86_64-1.txz">
 <!ENTITY perlpkgmd5  "608903367d86c1760b88182ddfc2053f">
 <!ENTITY libnlpkg    "libnl-1.1.4-x86_64-1.txz">
@@ -52,20 +56,27 @@ monitoring tools like Observium.
 Install prerequisites.
 -->
 <FILE Name="&pkgdir;/&perlpkg;" Run="upgradepkg --install-new">
-<URL>http://slackbuilds.org/mirror/slackware/slackware64-current/slackware64/d/&perlpkg;</URL>
+<URL>&pkghost;/d/&perlpkg;</URL>
 <MD5>&perlpkgmd5;</MD5>
 </FILE>
 <FILE Name="&pkgdir;/&libnlpkg;" Run="upgradepkg --install-new">
-<URL>http://slackbuilds.org/mirror/slackware/slackware64-current/slackware64/l/&libnlpkg;</URL>
+<URL>&pkghost;/l/&libnlpkg;</URL>
 <MD5>&libnlpkgmd5;</MD5>
 </FILE>
 
 <!--
 Get the package.
 -->
-<FILE Name="&pkgdir;/net-snmp-&pkgversion;-x86_64-1.txz" Run="upgradepkg --install-new">
-<URL>http://slackbuilds.org/mirror/slackware/slackware64-current/slackware64/n/net-snmp-&pkgversion;-x86_64-1.txz</URL>
-<MD5>29e5ba42618c19d3da6e6fde97a2b161</MD5>
+<FILE Name="&pkgdir;/&snmppkg;" Run="upgradepkg --install-new">
+<URL>&pkghost;/n/&snmppkg;</URL>
+<MD5>&snmppkgmd5;</MD5>
+</FILE>
+
+<!--
+Fetch an icon
+-->
+<FILE Name="&plugdir;/snmp.png">
+<URL>http://serversitters.com/wp-content/uploads/2014/02/network-monitoring.png</URL>
 </FILE>
 
 <!--
@@ -101,21 +112,41 @@ disk /mnt/cache
 </FILE>
 
 <!--
-Update rc.d to use our config file
+Update rc.d to use our config file, restart snmpd, and test it
 -->
 <FILE Run="/bin/bash">
 <INLINE>
+echo "+=============================================================================="
+echo "| Updating /etc/rc.d/rc.snmpd to use our config file"
+echo "+=============================================================================="
+
 bash /etc/rc.d/rc.snmpd stop
 sed -i.old -e 's#/etc/snmp/snmpd.conf#&plugdir;/snmpd.conf#g' /etc/rc.d/rc.snmpd
 bash /etc/rc.d/rc.snmpd start
-</INLINE>
-</FILE>
 
-<!--
-Fetch an icon
--->
-<FILE Name="&plugdir;/snmp.png">
-<URL>http://serversitters.com/wp-content/uploads/2014/02/network-monitoring.png</URL>
+echo ""
+echo ""
+
+echo "+=============================================================================="
+echo "| Testing SNMP by listing mounts"
+echo "+=============================================================================="
+
+RESULTS=$(snmpwalk -v 1 localhost -c public hrFSMountPoint 2>&amp;1)
+if [[ "$RESULTS" =~ "/boot" ]]
+then
+  echo "Looks like snmpd is working... Output:"
+  echo "$RESULTS"
+  echo ""
+  echo ""
+  exit 0
+else
+  echo "Couldn't find /boot mount point in SNMP output. Output:"
+  echo "$RESULTS"
+  echo ""
+  echo ""
+  exit 1
+fi
+</INLINE>
 </FILE>
 
 <!--
@@ -138,6 +169,10 @@ The 'remove' script.
 -->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
+echo "+=============================================================================="
+echo "| Uninstalling packages"
+echo "+=============================================================================="
+
 # Remove old 'package' files.
 rm -f $(ls &pkgdir;/&name;*.txz 2>/dev/null)
 
@@ -145,14 +180,24 @@ rm -f $(ls &pkgdir;/&name;*.txz 2>/dev/null)
 rm -f &pkgdir;/&perlpkg; &pkgdir;/&libnlpkg;
 
 # Remove the package
-removepkg &name;
+removepkg $(basename &snmppkg; .txz) | grep -v -e '  --&gt; Deleting'
 
 # Remove the prerequisites
-removepkg $(basename &perlpkg; .txz)
-removepkg $(basename &libnlpkg; .txz)
+removepkg $(basename &perlpkg; .txz) | grep -v -e '  --&gt; Deleting'
+removepkg $(basename &libnlpkg; .txz) | grep -v -e '  --&gt; Deleting'
+
+echo ""
+echo ""
+
+echo "+=============================================================================="
+echo "| Deleting &plugdir;"
+echo "+=============================================================================="
 
 # Remove plugin.
 rm -rf &plugdir;
+
+echo ""
+echo ""
 </INLINE>
 </FILE>
 
