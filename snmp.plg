@@ -5,7 +5,7 @@
 <!ENTITY author      "coppit">
 <!ENTITY version     "2015.06.24">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
-<!ENTITY pkgversion  "5.7.3">
+<!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/&repo;/master">
 <!ENTITY plugdir     "/usr/local/emhttp/plugins/&name;">
 <!ENTITY pkgdir      "/boot/packages">
@@ -173,18 +173,19 @@ echo "+=========================================================================
 echo "| Uninstalling packages"
 echo "+=============================================================================="
 
-# Remove old 'package' files.
+# Delete the package, and any old package files too
 rm -f $(ls &pkgdir;/&name;*.txz 2>/dev/null)
 
-# Remove the prerequisite packages
+# Delete the prerequisite packages
 rm -f &pkgdir;/&perlpkg; &pkgdir;/&libnlpkg;
 
-# Remove the package
+# Uninstall the package
 removepkg $(basename &snmppkg; .txz) | grep -v -e '  --&gt; Deleting'
 
-# Remove the prerequisites
-removepkg $(basename &perlpkg; .txz) | grep -v -e '  --&gt; Deleting'
-removepkg $(basename &libnlpkg; .txz) | grep -v -e '  --&gt; Deleting'
+# Don't Uninstall the prerequisites, in case some other plug is using them. On reboot, they'll get "removed" if no plugin
+# needs them, or will be re-downloaded and reinstalled by some plugin that does need them.
+#removepkg $(basename &perlpkg; .txz) | grep -v -e '  --&gt; Deleting'
+#removepkg $(basename &libnlpkg; .txz) | grep -v -e '  --&gt; Deleting'
 
 echo ""
 echo ""
