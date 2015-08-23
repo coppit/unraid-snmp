@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2015.08.23-1">
+<!ENTITY version     "2015.08.24">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -30,7 +30,7 @@
 <CHANGES>
 ##&name;
 
-###2015.08.23-1
+###2015.08.24
 - Added hard drive temperature capture
 
 ###2015.08.23
