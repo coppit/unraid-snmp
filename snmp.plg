@@ -30,6 +30,10 @@
 <CHANGES>
 ##&name;
 
+###2015.08.23
+- Reduced logging to "warning" level
+- Added hard drive temperature capture
+
 ###2015.06.24
 - Initial unRAID V6 release.
 </CHANGES>
