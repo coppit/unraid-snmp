@@ -108,6 +108,8 @@ disk /mnt/disk18
 disk /mnt/disk19
 disk /mnt/disk20
 disk /mnt/cache
+
+extend disktemp /usr/local/emhttp/plugins/snmp/drive_temps.sh
 </INLINE>
 </FILE>
 
@@ -147,6 +149,9 @@ else
   echo ""
   exit 1
 fi
+
+echo "Here's what drive temperatures look like:"
+snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."disktemp"'
 </INLINE>
 </FILE>
 
