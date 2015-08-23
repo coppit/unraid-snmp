@@ -147,7 +147,6 @@ then
   echo "$RESULTS"
   echo ""
   echo ""
-  exit 0
 else
   echo "Couldn't find /boot mount point in SNMP output. Output:"
   echo "$RESULTS"
@@ -158,6 +157,8 @@ fi
 
 echo "Here's what drive temperatures look like:"
 snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."disktemp"'
+
+exit 0
 </INLINE>
 </FILE>
 
