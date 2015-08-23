@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2015.07.20">
+<!ENTITY version     "2015.08.23">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -117,11 +117,12 @@ Update rc.d to use our config file, restart snmpd, and test it
 <FILE Run="/bin/bash">
 <INLINE>
 echo "+=============================================================================="
-echo "| Updating /etc/rc.d/rc.snmpd to use our config file"
+echo "| Updating /etc/rc.d/rc.snmpd to use our config file, and to reduce logging"
 echo "+=============================================================================="
 
 bash /etc/rc.d/rc.snmpd stop
 sed -i.old -e 's#/etc/snmp/snmpd.conf#&plugdir;/snmpd.conf#g' /etc/rc.d/rc.snmpd
+sed -i.old -e 's#OPTIONS="#OPTIONS="-LF w /var/log/snmpd.log #g' /etc/rc.d/rc.snmpd
 bash /etc/rc.d/rc.snmpd start
 
 echo ""
