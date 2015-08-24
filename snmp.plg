@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2015.08.24">
+<!ENTITY version     "2015.08.25">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -29,6 +29,9 @@
 
 <CHANGES>
 ##&name;
+
+###2015.08.25
+- Download and install the drive temp script (duh)
 
 ###2015.08.24
 - Added hard drive temperature capture
@@ -86,6 +89,13 @@ Fetch an icon
 </FILE>
 
 <!--
+Fetch the script
+-->
+<FILE Name="&plugdir;/drive_temps.sh">
+<URL>&gitURL;/drive_temps.sh</URL>
+</FILE>
+
+<!--
 Set up the config file
 -->
 <FILE Name="&plugdir;/snmpd.conf">
@@ -129,8 +139,12 @@ echo "| Updating /etc/rc.d/rc.snmpd to use our config file, and to reduce loggin
 echo "+=============================================================================="
 
 bash /etc/rc.d/rc.snmpd stop
+
 sed -i.old -e 's#/etc/snmp/snmpd.conf#&plugdir;/snmpd.conf#g' /etc/rc.d/rc.snmpd
 sed -i.old -e 's#OPTIONS="#OPTIONS="-LF w /var/log/snmpd.log #g' /etc/rc.d/rc.snmpd
+
+chmod a+x &plugdir;/drive_temps.sh
+
 bash /etc/rc.d/rc.snmpd start
 
 echo ""
