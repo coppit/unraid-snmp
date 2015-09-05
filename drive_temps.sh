@@ -3,6 +3,7 @@
 MDCMD=/usr/local/sbin/mdcmd
 AWK=/usr/bin/awk
 CAT=/usr/bin/cat
+ECHO=/usr/bin/echo
 FIND=/usr/bin/find
 GREP=/usr/bin/grep
 RM=/usr/bin/rm
@@ -28,17 +29,17 @@ do
   read -r name
 
   # Double-check the data to make sure it's in sync
-  device_num=$(echo $device | $SED 's#.*\.\(.*\)=.*#\1#')
-  name_num=$(echo $name | $SED 's#.*\.\(.*\)=.*#\1#')
+  device_num=$($ECHO $device | $SED 's#.*\.\(.*\)=.*#\1#')
+  name_num=$($ECHO $name | $SED 's#.*\.\(.*\)=.*#\1#')
 
   if [[ "$device_num" != "$name_num" ]]
   then
-    echo 'ERROR! Couldn'"'"'t parse mdcmd output. Command was:'
-    echo '$MDCMD status | $GREP '"'"'\(rdevId\|rdevName\).*=.'"'"' | while read -r device'
+    $ECHO 'ERROR! Couldn'"'"'t parse mdcmd output. Command was:'
+    $ECHO "$MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device"
   fi
 
-  device=$(echo $device | $SED 's#.*=#/dev/#')
-  name=$(echo $name | $SED 's/.*=//')
+  device=$($ECHO $device | $SED 's#.*=#/dev/#')
+  name=$($ECHO $name | $SED 's/.*=//')
 
   # Guzzi reports that it doesn't work for him with this guard code. I tested it and on my systems the drives don't spin
   # up. Perhaps this behavior changed from when the code I stole was first written. :)
@@ -49,9 +50,9 @@ do
 #  fi
 
   # For debugging
-#  echo "$name = $device, $temp"
+#  $ECHO "$name = $device, $temp"
 
-  echo "$name: $temp" >> $CACHE
+  $ECHO "$name: $temp" >> $CACHE
 done
 
 $CAT $CACHE
