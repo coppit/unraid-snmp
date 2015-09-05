@@ -135,8 +135,8 @@ disk /mnt/disk19
 disk /mnt/disk20
 disk /mnt/cache
 
-extend disktemp /usr/local/emhttp/plugins/snmp/drive_temps.sh
-extend sharefree /usr/local/emhttp/plugins/snmp/share_free_space.sh
+extend disktemp &plugdir;/drive_temps.sh
+extend sharefree &plugdir;/share_free_space.sh
 </INLINE>
 </FILE>
 
@@ -155,6 +155,7 @@ sed -i.old -e 's#/etc/snmp/snmpd.conf#&plugdir;/snmpd.conf#g' /etc/rc.d/rc.snmpd
 sed -i.old -e 's#OPTIONS="#OPTIONS="-LF w /var/log/snmpd.log #g' /etc/rc.d/rc.snmpd
 
 chmod a+x &plugdir;/drive_temps.sh
+chmod a+x &plugdir;/share_free_space.sh
 
 bash /etc/rc.d/rc.snmpd start
 
@@ -181,7 +182,12 @@ else
 fi
 
 echo "Here's what drive temperatures look like:"
+echo snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."disktemp"'
 snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."disktemp"'
+
+echo "Here's what share free space looks like:"
+echo snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."sharefree"'
+snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."sharefree"'
 
 exit 0
 </INLINE>
