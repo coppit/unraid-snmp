@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-MDCMD=/root/mdcmd
+MDCMD=/usr/local/sbin/mdcmd
 AWK=/usr/bin/awk
 CAT=/usr/bin/cat
 FIND=/usr/bin/find
