@@ -36,6 +36,7 @@ do
   then
     $ECHO 'ERROR! Couldn'"'"'t parse mdcmd output. Command was:'
     $ECHO "$MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device"
+    exit 1
   fi
 
   device=$($ECHO $device | $SED 's#.*=#/dev/#')
