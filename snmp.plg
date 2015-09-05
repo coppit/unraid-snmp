@@ -172,19 +172,19 @@ then
   echo "Looks like snmpd is working... Output:"
   echo "$RESULTS"
   echo ""
-  echo ""
 else
   echo "Couldn't find /boot mount point in SNMP output. Output:"
   echo "$RESULTS"
   echo ""
-  echo ""
   exit 1
 fi
 
+echo ""
 echo "Here's what drive temperatures look like:"
 echo snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."disktemp"'
 snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."disktemp"'
 
+echo ""
 echo "Here's what share free space looks like:"
 echo snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."freespace"'
 snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."freespace"'
