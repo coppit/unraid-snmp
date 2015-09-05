@@ -10,13 +10,20 @@
 <!ENTITY plugdir     "/usr/local/emhttp/plugins/&name;">
 <!ENTITY pkgdir      "/boot/packages">
 <!ENTITY cfgdir      "/boot/config/plugins/&name;">
-<!ENTITY pkghost     "http://mirrors1.kernel.org/slackware/slackware64-14.1/slackware64">
+<!ENTITY pkghost     "&gitURL;/packages">
+
 <!ENTITY snmppkg     "net-snmp-&pkgversion;-x86_64-2.txz">
 <!ENTITY snmppkgmd5  "5b0a0b875e962707bd67fcd9a11f9d78">
+
 <!ENTITY perlpkg     "perl-5.18.1-x86_64-1.txz">
 <!ENTITY perlpkgmd5  "608903367d86c1760b88182ddfc2053f">
+
 <!ENTITY libnlpkg    "libnl-1.1.4-x86_64-1.txz">
 <!ENTITY libnlpkgmd5 "435837a5bf0401a937d6ec93e458333b">
+
+<!ENTITY iconfile    "snmp.png">
+<!ENTITY iconfilemd5 "863e97dc0e59ae9352f558ee8e0d40a2">
+
 <!ENTITY community   "public">
 <!ENTITY location    "Here">
 <!ENTITY contact     "root@tower">
@@ -29,6 +36,9 @@
 
 <CHANGES>
 ##&name;
+
+###2015.09.06
+- Move packages to github for better reliability
 
 ###2015.09.05
 - Add support for reporting share free space
@@ -68,11 +78,11 @@ monitoring tools like Observium.
 Install prerequisites.
 -->
 <FILE Name="&pkgdir;/&perlpkg;" Run="upgradepkg --install-new">
-<URL>&pkghost;/d/&perlpkg;</URL>
+<URL>&pkghost;/&perlpkg;</URL>
 <MD5>&perlpkgmd5;</MD5>
 </FILE>
 <FILE Name="&pkgdir;/&libnlpkg;" Run="upgradepkg --install-new">
-<URL>&pkghost;/l/&libnlpkg;</URL>
+<URL>&pkghost;/&libnlpkg;</URL>
 <MD5>&libnlpkgmd5;</MD5>
 </FILE>
 
@@ -80,15 +90,16 @@ Install prerequisites.
 Get the package.
 -->
 <FILE Name="&pkgdir;/&snmppkg;" Run="upgradepkg --install-new">
-<URL>&pkghost;/n/&snmppkg;</URL>
+<URL>&pkghost;/&snmppkg;</URL>
 <MD5>&snmppkgmd5;</MD5>
 </FILE>
 
 <!--
 Fetch an icon
 -->
-<FILE Name="&plugdir;/snmp.png">
-<URL>http://serversitters.com/wp-content/uploads/2014/02/network-monitoring.png</URL>
+<FILE Name="&plugdir;/&iconfile;">
+<URL>&gitURL;/&iconfile;</URL>
+<MD5>&iconfilemd5;</MD5>
 </FILE>
 
 <!--
@@ -171,10 +182,10 @@ if [[ "$RESULTS" =~ "/boot" ]]
 then
   echo "Looks like snmpd is working... Output:"
   echo "$RESULTS"
-  echo ""
 else
   echo "Couldn't find /boot mount point in SNMP output. Output:"
   echo "$RESULTS"
+  echo ""
   echo ""
   exit 1
 fi
@@ -188,6 +199,9 @@ echo ""
 echo "Here's what share free space looks like:"
 echo snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."sharefree"'
 snmpwalk -v 2c localhost -c public 'NET-SNMP-EXTEND-MIB::nsExtendOutLine."sharefree"'
+
+echo ""
+echo ""
 
 exit 0
 </INLINE>
