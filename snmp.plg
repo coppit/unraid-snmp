@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2015.08.25">
+<!ENTITY version     "2015.09.05">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -29,6 +29,9 @@
 
 <CHANGES>
 ##&name;
+
+###2015.09.05
+- Add support for reporting share free space
 
 ###2015.08.25
 - Download and install the drive temp script (duh)
@@ -89,10 +92,17 @@ Fetch an icon
 </FILE>
 
 <!--
-Fetch the script
+Fetch the drive temperature script
 -->
 <FILE Name="&plugdir;/drive_temps.sh">
 <URL>&gitURL;/drive_temps.sh</URL>
+</FILE>
+
+<!--
+Fetch the share free space script
+-->
+<FILE Name="&plugdir;/share_free_space.sh">
+<URL>&gitURL;/share_free_space.sh</URL>
 </FILE>
 
 <!--
@@ -126,6 +136,7 @@ disk /mnt/disk20
 disk /mnt/cache
 
 extend disktemp /usr/local/emhttp/plugins/snmp/drive_temps.sh
+extend sharefree /usr/local/emhttp/plugins/snmp/share_free_space.sh
 </INLINE>
 </FILE>
 
