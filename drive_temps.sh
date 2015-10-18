@@ -17,8 +17,12 @@ HDPARM=/usr/sbin/hdparm
 SMARTCTL=/usr/sbin/smartctl
 
 CACHE=/tmp/plugins/snmp/drive_temps.txt
+LOG=/tmp/plugins/snmp/drive_temps.log
 
 mkdir -p $(dirname $CACHE)
+mkdir -p $(dirname $LOG)
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 # Cache the results for 5 minutes at a time, to speed up queries
 if $FIND $(dirname $CACHE) -mmin -5 -name $($BASENAME $CACHE) | $GREP -q $($BASENAME $CACHE)
@@ -27,39 +31,47 @@ then
   exit 0
 fi
 
-$RM -f $CACHE
+#-----------------------------------------------------------------------------------------------------------------------
 
-$MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device
-do
-  read -r name
+function compute_temperatures {
+  $RM -f $CACHE
 
-  # Double-check the data to make sure it's in sync
-  device_num=$($ECHO $device | $SED 's#.*\.\(.*\)=.*#\1#')
-  name_num=$($ECHO $name | $SED 's#.*\.\(.*\)=.*#\1#')
+  $MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device
+  do
+    read -r name
 
-  if [[ "$device_num" != "$name_num" ]]
-  then
-    $ECHO 'ERROR! Couldn'"'"'t parse mdcmd output. Command was:'
-    $ECHO "$MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device"
-    exit 1
-  fi
+    # Double-check the data to make sure it's in sync
+    device_num=$($ECHO $device | $SED 's#.*\.\(.*\)=.*#\1#')
+    name_num=$($ECHO $name | $SED 's#.*\.\(.*\)=.*#\1#')
 
-  device=$($ECHO $device | $SED 's#.*=#/dev/#')
-  name=$($ECHO $name | $SED 's/.*=//')
+    if [[ "$device_num" != "$name_num" ]]
+    then
+      $ECHO 'ERROR! Couldn'"'"'t parse mdcmd output. Command was:'
+      $ECHO "$MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device"
+      exit 1
+    fi
 
-  # Guzzi reports that it doesn't work for him with this guard code. I tested it and on my systems the drives don't spin
-  # up. Perhaps this behavior changed from when the code I stole was first written. :)
-  # https://lime-technology.com/forum/index.php?topic=41019.msg403695#msg403695
-#  if ! $HDPARM -C $device 2>&1 | $GREP -cq standby
-#  then
-    temp=$($SMARTCTL -A $device | $GREP -m 1 -i Temperature_Celsius | $AWK '{print $10}')
-#  fi
+    device=$($ECHO $device | $SED 's#.*=#/dev/#')
+    name=$($ECHO $name | $SED 's/.*=//')
 
-  # For debugging
-#  $ECHO "$name = $device, $temp"
+    # Guzzi reports that it doesn't work for him with this guard code. I tested it and on my systems the drives don't spin
+    # up. Perhaps this behavior changed from when the code I stole was first written. :)
+    # https://lime-technology.com/forum/index.php?topic=41019.msg403695#msg403695
+#    if ! $HDPARM -C $device 2>&1 | $GREP -cq standby
+#    then
+      temp=$($SMARTCTL -A $device | $GREP -m 1 -i Temperature_Celsius | $AWK '{print $10}')
+#    fi
 
-  $ECHO "$name: $temp" >> $CACHE
-done
+    # For debugging
+    $ECHO "$name = $device, $temp"
 
-$CAT $CACHE
+    $ECHO "$name: $temp" >> $CACHE
+  done
+}
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+compute_temperatures </dev/null >$LOG 2>&1 &
+disown
+
 exit 0
