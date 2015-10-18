@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2015.09.06">
+<!ENTITY version     "2015.10.18">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -36,6 +36,9 @@
 
 <CHANGES>
 ##&name;
+
+###2015.10.18
+- Run temperature updates in the background
 
 ###2015.09.06
 - Move packages to github for better reliability
