@@ -10,6 +10,7 @@ BASENAME=/usr/bin/basename
 CAT=/usr/bin/cat
 ECHO=/usr/bin/echo
 FIND=/usr/bin/find
+FLOCK=/usr/bin/flock
 GREP=/usr/bin/grep
 RM=/usr/bin/rm
 SED=/usr/bin/sed
@@ -18,9 +19,11 @@ SMARTCTL=/usr/sbin/smartctl
 
 CACHE=/tmp/plugins/snmp/drive_temps.txt
 LOG=/tmp/plugins/snmp/drive_temps.log
+LOCKFILE=/tmp/plugins/snmp/drive_temps.lock
 
 mkdir -p $(dirname $CACHE)
 mkdir -p $(dirname $LOG)
+mkdir -p $(dirname $LOCKFILE)
 
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -34,6 +37,12 @@ fi
 #-----------------------------------------------------------------------------------------------------------------------
 
 function compute_temperatures {
+  if ! $FLOCK -n 200
+  then
+    echo "Couldn't acquire lock on $LOCKFILE"
+    exit 2
+  fi
+
   $RM -f $CACHE
 
   $MDCMD status | $GREP '\(rdevId\|rdevName\).*=.' | while read -r device
@@ -63,15 +72,17 @@ function compute_temperatures {
 #    fi
 
     # For debugging
-    $ECHO "$name = $device, $temp"
+#    $ECHO "$name = $device, $temp"
 
     $ECHO "$name: $temp" >> $CACHE
   done
+
+  sleep 15
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
 
-compute_temperatures </dev/null >$LOG 2>&1 &
+compute_temperatures </dev/null >>$LOG 2>&1 200>$LOCKFILE &
 disown
 
 exit 0
