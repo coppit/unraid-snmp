@@ -6,6 +6,7 @@
 
 MDCMD=/usr/local/sbin/mdcmd
 AWK=/usr/bin/awk
+BASENAME=/usr/bin/basename
 CAT=/usr/bin/cat
 ECHO=/usr/bin/echo
 FIND=/usr/bin/find
@@ -20,7 +21,7 @@ CACHE=/tmp/plugins/snmp/drive_temps.txt
 mkdir -p $(dirname $CACHE)
 
 # Cache the results for 5 minutes at a time, to speed up queries
-if $FIND $(dirname $CACHE) -mmin -5 -name drive_temps.txt | $GREP -q drive_temps.txt
+if $FIND $(dirname $CACHE) -mmin -5 -name $($BASENAME $CACHE) | $GREP -q $($BASENAME $CACHE)
 then
   $CAT $CACHE
   exit 0
