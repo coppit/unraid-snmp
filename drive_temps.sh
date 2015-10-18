@@ -1,5 +1,9 @@
 #!/usr/bin/bash
 
+# This implementation isn't very advanced. Some hard drive manufacturers can compute the drive temps without spinning up
+# the drives. See https://code.google.com/p/unraid-unmenu/source/browse/trunk/drivedb.lib.awk for a more sophisticated
+# version.
+
 MDCMD=/usr/local/sbin/mdcmd
 AWK=/usr/bin/awk
 CAT=/usr/bin/cat
