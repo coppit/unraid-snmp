@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2015.10.18">
+<!ENTITY version     "2016.02.28">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.2">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -15,8 +15,8 @@
 <!ENTITY snmppkg     "net-snmp-&pkgversion;-x86_64-2.txz">
 <!ENTITY snmppkgmd5  "5b0a0b875e962707bd67fcd9a11f9d78">
 
-<!ENTITY perlpkg     "perl-5.18.1-x86_64-1.txz">
-<!ENTITY perlpkgmd5  "608903367d86c1760b88182ddfc2053f">
+<!ENTITY perlpkg     "perl-5.22.0-x86_64-2.txz">
+<!ENTITY perlpkgmd5  "0d3e2ecf19b061b2646b2fb69dc211ed">
 
 <!ENTITY libnlpkg    "libnl-1.1.4-x86_64-1.txz">
 <!ENTITY libnlpkgmd5 "435837a5bf0401a937d6ec93e458333b">
@@ -36,6 +36,9 @@
 
 <CHANGES>
 ##&name;
+
+###2016.02.28
+- Bump the version of perl to match nerd tools.
 
 ###2015.10.18
 - Run temperature updates in the background
