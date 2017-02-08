@@ -13,7 +13,7 @@
 <!ENTITY pkghost     "&gitURL;/packages">
 
 <!ENTITY snmppkg     "net-snmp-&pkgversion;-x86_64-4.txz">
-<!ENTITY snmppkgmd5  "54c5fb325e875b107b2ea38b96c3deac">
+<!ENTITY snmppkgmd5  "b9ef68216b97cb5f0bcd9f3312e5941e">
 
 <!ENTITY libnlpkg    "libnl-1.1.4-x86_64-1.txz">
 <!ENTITY libnlpkgmd5 "435837a5bf0401a937d6ec93e458333b">
