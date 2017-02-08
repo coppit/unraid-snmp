@@ -12,7 +12,7 @@
 <!ENTITY cfgdir      "/boot/config/plugins/&name;">
 <!ENTITY pkghost     "&gitURL;/packages">
 
-<!ENTITY snmppkg     "net-snmp-&pkgversion;.txz">
+<!ENTITY snmppkg     "net-snmp-&pkgversion;-x86_64-4.txz">
 <!ENTITY snmppkgmd5  "54c5fb325e875b107b2ea38b96c3deac">
 
 <!ENTITY libnlpkg    "libnl-1.1.4-x86_64-1.txz">
