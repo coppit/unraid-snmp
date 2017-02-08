@@ -3,20 +3,17 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2016.02.28">
+<!ENTITY version     "2017.02.07">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
-<!ENTITY pkgversion  "5.7.2">
+<!ENTITY pkgversion  "5.7.3">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
 <!ENTITY plugdir     "/usr/local/emhttp/plugins/&name;">
 <!ENTITY pkgdir      "/boot/packages">
 <!ENTITY cfgdir      "/boot/config/plugins/&name;">
 <!ENTITY pkghost     "&gitURL;/packages">
 
-<!ENTITY snmppkg     "net-snmp-&pkgversion;-x86_64-2.txz">
-<!ENTITY snmppkgmd5  "5b0a0b875e962707bd67fcd9a11f9d78">
-
-<!ENTITY perlpkg     "perl-5.22.0-x86_64-2.txz">
-<!ENTITY perlpkgmd5  "0d3e2ecf19b061b2646b2fb69dc211ed">
+<!ENTITY snmppkg     "net-snmp-&pkgversion;.tar.xz">
+<!ENTITY snmppkgmd5  "54c5fb325e875b107b2ea38b96c3deac">
 
 <!ENTITY libnlpkg    "libnl-1.1.4-x86_64-1.txz">
 <!ENTITY libnlpkgmd5 "435837a5bf0401a937d6ec93e458333b">
@@ -36,6 +33,9 @@
 
 <CHANGES>
 ##&name;
+
+###2017.02.07
+- Drop all pretense of trying to keep up with nerd tools. Just require perl, and suggest that the user install nerd tools.
 
 ###2016.02.28
 - Bump the version of perl to match nerd tools.
@@ -81,12 +81,26 @@ monitoring tools like Observium.
 </FILE>
 
 <!--
+Check for prerequisites
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+perl_path=$(which perl 2>/dev/null)
+if [ ! -x "$perl_path" ] ; then
+  echo "This plugin requires perl. The easiest way to get it is to install NerdPack:"
+  echo "http://lime-technology.com/forum/index.php?topic=37541.0"
+  echo ""
+  echo "Exiting"
+  echo ""
+  echo ""
+  exit 1
+fi
+</INLINE>
+</FILE>
+
+<!--
 Install prerequisites.
 -->
-<FILE Name="&pkgdir;/&perlpkg;" Run="upgradepkg --install-new">
-<URL>&pkghost;/&perlpkg;</URL>
-<MD5>&perlpkgmd5;</MD5>
-</FILE>
 <FILE Name="&pkgdir;/&libnlpkg;" Run="upgradepkg --install-new">
 <URL>&pkghost;/&libnlpkg;</URL>
 <MD5>&libnlpkgmd5;</MD5>
@@ -240,15 +254,11 @@ echo "+=========================================================================
 # Delete the package, and any old package files too
 rm -f $(ls &pkgdir;/&name;*.txz 2>/dev/null)
 
-# Delete the prerequisite packages
-rm -f &pkgdir;/&perlpkg; &pkgdir;/&libnlpkg;
-
 # Uninstall the package
 removepkg $(basename &snmppkg; .txz) | grep -v -e '  --&gt; Deleting'
 
 # Don't Uninstall the prerequisites, in case some other plug is using them. On reboot, they'll get "removed" if no plugin
 # needs them, or will be re-downloaded and reinstalled by some plugin that does need them.
-#removepkg $(basename &perlpkg; .txz) | grep -v -e '  --&gt; Deleting'
 #removepkg $(basename &libnlpkg; .txz) | grep -v -e '  --&gt; Deleting'
 
 echo ""
