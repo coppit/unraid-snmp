@@ -6,7 +6,7 @@ SED=/usr/bin/sed
 
 SHARES_INI=/var/local/emhttp/shares.ini
 
-$GREP '\(\[\|free\)' /var/local/emhttp/shares.ini | while read -r share_name
+$GREP '\(\[\|free=\)' /var/local/emhttp/shares.ini | while read -r share_name
 do
   read -r free_kb
 
