@@ -175,6 +175,15 @@ extend sharefree &plugdir;/share_free_space.sh
 </FILE>
 
 <!--
+Fix permissions on &plugdir;
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+chmod o+rx &plugdir;
+</INLINE>
+</FILE>
+
+<!--
 Update rc.d to use our config file, restart snmpd, and test it
 -->
 <FILE Run="/bin/bash">
@@ -260,7 +269,7 @@ rm -f $(ls &pkgdir;/&name;*.txz 2>/dev/null)
 # Uninstall the package
 removepkg $(basename &snmppkg; .txz) | grep -v -e '  --&gt; Deleting'
 
-# Don't Uninstall the prerequisites, in case some other plug is using them. On reboot, they'll get "removed" if no plugin
+# Don't uninstall the prerequisites, in case some other plug is using them. On reboot, they'll get "removed" if no plugin
 # needs them, or will be re-downloaded and reinstalled by some plugin that does need them.
 #removepkg $(basename &libnlpkg; .txz) | grep -v -e '  --&gt; Deleting'
 
