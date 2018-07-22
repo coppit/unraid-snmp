@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name        "snmp">
 <!ENTITY author      "coppit">
-<!ENTITY version     "2017.02.07">
+<!ENTITY version     "2018.07.22">
 <!ENTITY pluginURL   "https://github.com/coppit/unraid-snmp/raw/master/snmp.plg">
 <!ENTITY pkgversion  "5.7.3">
 <!ENTITY gitURL      "https://raw.githubusercontent.com/&author;/unraid-snmp/master">
@@ -33,6 +33,9 @@
 
 <CHANGES>
 ##&name;
+
+###2018.07.22
+- Fix bug with grep and "mostfree" allocator. https://github.com/coppit/unraid-snmp/pull/1
 
 ###2017.02.07
 - Drop all pretense of trying to keep up with nerd tools. Just require perl, and suggest that the user install nerd tools.
